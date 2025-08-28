@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.financewalk.model.Category;
+import br.com.fiap.financewalk.repository.CategoryRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -27,66 +27,64 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CategoryController {
 
-    private List<Category> repository = new ArrayList<>();
+    @Autowired // IoD
+    private CategoryRepository categoryRepository;
 
     @GetMapping
-    public List<Category> index(){ 
-        return repository;
+    public List<Category> index() {
+        return categoryRepository.findAll();
     }
 
     @PostMapping
-    @ResponseStatus(code = HttpStatus.CREATED)
-    public Category create(@RequestBody Category category){
-        category.setId(Math.abs(new Random().nextLong()));
+    @ResponseStatus(HttpStatus.CREATED)
+    public Category create(@RequestBody Category category) {
         log.info("criando categoria " + category);
-        repository.add(category);
+        categoryRepository.save(category);
         return category;
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Category> get(@PathVariable Long id){
+    public ResponseEntity<Category> get(@PathVariable Long id) {
         log.info("buscando categoria com id " + id);
-        var categoryFound = getCategoryById(id); 
+        var categoryFound = getCategoryById(id);
 
-        if (categoryFound.isEmpty()) return ResponseEntity.notFound().build(); 
+        if (categoryFound.isEmpty())
+            return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(categoryFound.get());
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> destroy(@PathVariable Long id){
+    public ResponseEntity<Void> destroy(@PathVariable Long id) {
         log.info("apagando categoria com id {}", id);
 
-        var categoryFound = getCategoryById(id); 
-        
-        if (categoryFound.isEmpty()) return ResponseEntity.notFound().build(); 
+        var categoryFound = getCategoryById(id);
 
-        repository.remove(categoryFound.get());
+        if (categoryFound.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        categoryRepository.delete(categoryFound.get());
 
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Category> update(@RequestBody Category categoryUpdated, @PathVariable Long id ){
+    public ResponseEntity<Category> update(@RequestBody Category categoryUpdated, @PathVariable Long id) {
         log.info("atualizando categoria {} com id {}", categoryUpdated, id);
 
-        var categoryFound = getCategoryById(id); 
-        
-        if (categoryFound.isEmpty()) return ResponseEntity.notFound().build(); //TODO refatorar
+        var categoryFound = getCategoryById(id);
 
-        repository.remove(categoryFound.get());
+        if (categoryFound.isEmpty())
+            return ResponseEntity.notFound().build(); // TODO refatorar
+
         categoryUpdated.setId(id);
-        repository.add(categoryUpdated);
+        categoryRepository.save(categoryUpdated);
 
         return ResponseEntity.ok(categoryUpdated);
     }
 
     private Optional<Category> getCategoryById(Long id) {
-        var categoryFound = repository.stream()
-            .filter(category -> category.getId().equals(id))
-            .findFirst();
-        return categoryFound;
+        return categoryRepository.findById(id);
     }
 
-    
 }
