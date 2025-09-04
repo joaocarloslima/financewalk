@@ -28,14 +28,14 @@ public class Transaction {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(min = 3, max = 255)
+    @NotBlank(message = "{transaction.description.notblank}")
+    @Size(min = 10, max = 255, message = "{transaction.description.size}")
     private String description;
 
-    @Positive
+    @Positive(message = "{transaction.amount.positive}")
     private BigDecimal amount;
 
-    @PastOrPresent
+    @PastOrPresent(message = "{transaction.date.pastorpresent}")
     private LocalDate date;
 
     @Enumerated(EnumType.STRING)
