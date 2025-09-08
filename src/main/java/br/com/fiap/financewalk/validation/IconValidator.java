@@ -12,12 +12,13 @@ public class IconValidator implements ConstraintValidator<Icon, String> {
         "Apple",
         "Bus",
         "Train",
-        "Book"
+        "Book",
+        "Banknote"
     );
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return validIcons.contains(value);
+        return value.isBlank() || validIcons.contains(value) ;
     }
 
 }

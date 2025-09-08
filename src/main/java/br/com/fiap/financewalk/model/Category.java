@@ -23,8 +23,7 @@ public class Category {
     @NotBlank(message = "{category.name.notblank}")
     private String name;
 
-    @NotBlank(message = "{category.icon.notblank}")
-    @Icon
+    //@Icon
     private String icon;
 
 }
