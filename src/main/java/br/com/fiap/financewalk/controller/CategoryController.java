@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.financewalk.model.Category;
 import br.com.fiap.financewalk.repository.CategoryRepository;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -34,7 +35,7 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Category create(@RequestBody Category category) {
+    public Category create(@RequestBody @Valid Category category) {
         log.info("criando categoria " + category);
         return categoryRepository.save(category);
     }
@@ -53,7 +54,7 @@ public class CategoryController {
     }
 
     @PutMapping("{id}")
-    public Category update(@RequestBody Category categoryUpdated, @PathVariable Long id) {
+    public Category update(@RequestBody @Valid Category categoryUpdated, @PathVariable Long id) {
         log.info("atualizando categoria {} com id {}", categoryUpdated, id);
 
         getCategoryById(id);
