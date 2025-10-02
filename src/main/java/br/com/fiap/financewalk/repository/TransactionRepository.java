@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 import br.com.fiap.financewalk.model.Transaction;
 
@@ -16,6 +17,9 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long>,
     List<Transaction> findByDescriptionContainingIgnoreCaseAndDate(String description, LocalDate date);
 
     List<Transaction> findByDate(LocalDate date);
+
+    //@Query("SELECT t FROM Transaction t ORDER BY t.id LIMIT ?1 OFFSET ?2") //JPQL
+    //List<Transaction> findAll(int size, int offset);
     
     //Java Persistence Query Language
     //@Query("SELECT t FROM Transaction WHERE date < now()")
