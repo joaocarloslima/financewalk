@@ -4,11 +4,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import br.com.fiap.financewalk.model.Transaction;
 
-public interface TransactionRepository extends JpaRepository<Transaction, Long>{
+public interface TransactionRepository extends JpaRepository<Transaction, Long>, JpaSpecificationExecutor<Transaction>{
 
     // SELECT * Transaction WHERE UPPER(description) like UPPER(%Java%)
     List<Transaction> findByDescriptionContainingIgnoreCase(String description);
