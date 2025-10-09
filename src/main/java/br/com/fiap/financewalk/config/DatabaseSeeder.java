@@ -7,6 +7,7 @@ import java.util.Random;
 
 import org.hibernate.type.descriptor.jdbc.NCharJdbcType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import br.com.fiap.financewalk.model.Category;
@@ -17,6 +18,7 @@ import br.com.fiap.financewalk.repository.TransactionRepository;
 import jakarta.annotation.PostConstruct;
 
 @Component
+@Profile("dev")
 public class DatabaseSeeder {
 
     @Autowired
