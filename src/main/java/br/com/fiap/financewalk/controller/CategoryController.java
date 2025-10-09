@@ -2,7 +2,9 @@ package br.com.fiap.financewalk.controller;
 
 import java.util.List;
 
+import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +36,7 @@ public class CategoryController {
 
     @GetMapping
     public List<Category> index() {
-        return categoryRepository.findAll();
+        return categoryService.findAll();
     }
 
     @PostMapping
@@ -47,31 +49,22 @@ public class CategoryController {
     @GetMapping("{id}")
     public Category get(@PathVariable Long id) {
         log.info("buscando categoria com id " + id);
-        return getCategoryById(id);
+        return categoryService.getCategoryById(id);
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void destroy(@PathVariable Long id) {
         log.info("apagando categoria com id {}", id);
-        categoryRepository.delete(getCategoryById(id));
+        categoryService.deleteById(id);
     }
 
     @PutMapping("{id}")
     public Category update(@RequestBody @Valid Category categoryUpdated, @PathVariable Long id) {
         log.info("atualizando categoria {} com id {}", categoryUpdated, id);
-
-        getCategoryById(id);
-        categoryUpdated.setId(id);
-        return categoryRepository.save(categoryUpdated);
+        return categoryService.update(categoryUpdated, id);
     }
 
-    private Category getCategoryById(Long id) {
-        return categoryRepository
-                    .findById(id)
-                    .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarefa não encontrada com id " + id)
-                    );
-    }
+   
 
 }
